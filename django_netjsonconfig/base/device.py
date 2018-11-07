@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from jsonfield import JSONField
 
 from .. import settings as app_settings
 from ..utils import get_random_key
@@ -50,6 +51,12 @@ class AbstractDevice(BaseModel):
                                                  help_text=_('ip address of the management interface, '
                                                              'if available'))
     hardware_id = models.CharField(**(app_settings.HARDWARE_ID_OPTIONS))
+    context = JSONField(null=True,
+                        blank=True,
+                        help_text=_('Additional '
+                                    '<a href="http://netjsonconfig.openwisp.org/'
+                                    'en/stable/general/basics.html#context">'
+                                    'context</a> for the configuration.'))
 
     class Meta:
         abstract = True

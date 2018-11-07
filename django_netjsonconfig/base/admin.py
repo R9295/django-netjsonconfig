@@ -271,6 +271,7 @@ class AbstractDeviceAdmin(BaseConfigAdmin):
               'os',
               'system',
               'notes',
+              'context',
               'created',
               'modified']
     if app_settings.HARDWARE_ID_ENABLED:
@@ -317,7 +318,8 @@ class AbstractDeviceAdmin(BaseConfigAdmin):
         c.device = self.model(id=request.POST.get('id'),
                               name=request.POST.get('name'),
                               mac_address=request.POST.get('mac_address'),
-                              key=request.POST.get('key'))
+                              key=request.POST.get('key'),
+                              context=request.POST.get('context'))
         return c
 
 

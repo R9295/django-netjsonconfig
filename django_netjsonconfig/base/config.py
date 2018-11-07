@@ -96,6 +96,8 @@ class AbstractConfig(BaseConfig):
                 'name': self.name,
                 'mac_address': self.mac_address
             })
+            if self.device.context:
+                c.update(self.device.context)
         c.update(app_settings.CONTEXT)
         if app_settings.HARDWARE_ID_ENABLED and self._has_device():
             c.update({'hardware_id': self.device.hardware_id})
