@@ -319,7 +319,7 @@ class AbstractDeviceAdmin(BaseConfigAdmin):
                               name=request.POST.get('name'),
                               mac_address=request.POST.get('mac_address'),
                               key=request.POST.get('key'),
-                              context=request.POST.get('context'))
+                              context=request.POST.get('context') or {})
         return c
 
 

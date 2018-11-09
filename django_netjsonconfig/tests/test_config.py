@@ -414,3 +414,28 @@ class TestConfig(CreateConfigMixin, CreateTemplateMixin,
 
     def test_get_template_model_bound(self):
         self.assertIs(Config().get_template_model(), Template)
+
+    def test_config_with_plugin(self):
+        c = Config(device=self._create_device(),
+                   backend='netjsonconfig.OpenWrt',
+                   config = {
+                       'chilli': {
+                           'disabled': 1
+                       }
+                   })
+        c.full_clean()
+        self.assertIn('{"chilli": {"disabled": 1}', c.backend_instance.json())
+        self.assertIn("package chilli\n\nconfig chilli 'chilli'", c.backend_instance.render())
+
+    def test_bad_config_with_plugin(self):
+        c = Config(device=self._create_device(),
+                   backend='netjsonconfig.OpenWrt',
+                   config = {
+                       'chilli': {
+                           'disabled': 'BAD_VALUE'
+                       }
+                   })
+        try:
+            c.full_clean()
+        except ValidationError as e:
+            self.assertIn('Invalid configuration triggered by "#/chilli/disabled"', e.message_dict['__all__'][0])

@@ -38,7 +38,7 @@ django.jQuery(function($) {
                 closePreview();
             });
         })
-        .error(function(xhr){
+        .fail(function(xhr){
             // if validation error, show it on page
             if (xhr.status == 400) {
                 $('#content-main form').trigger('submit');

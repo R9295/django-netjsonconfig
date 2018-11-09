@@ -6,7 +6,7 @@ change with care.
 from uuid import uuid4
 
 from django_x509.tests import TestX509Mixin
-
+from netjsonconfig.backends.openwrt.converters.base import OpenWrtConverter
 
 class CreateDeviceMixin(object):
     TEST_MAC_ADDRESS = '00:11:22:33:44:55'
@@ -110,3 +110,27 @@ Qt01H2yL7CvdEUi/gCUJNS9Jm40248nwKgyrwyoS3SjY49CAcEYLAgEC
 
 class TestVpnX509Mixin(CreateVpnMixin, TestX509Mixin):
     pass
+
+class CoovaConverter(OpenWrtConverter):
+    netjson_key = 'chilli'
+    _uci_types = ['chilli']
+    def to_intermediate_loop(self, block, result, index=None):
+        if block:
+            block.update({
+                '.type': 'chilli',
+                '.name': 'chilli'
+            })
+        result['chilli'] = [self.sorted_dict(block)]
+        return result
+
+class TestCoovaPlugin(object):
+    key = 'chilli'
+    converter = CoovaConverter
+    schema = {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "type": "object",
+        "properties": {
+             "disabled": {"type": "integer"},
+             "uamsecret": {"type": "string"},
+         },
+    }

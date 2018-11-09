@@ -3,9 +3,9 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.signals import m2m_changed, post_delete
 from django.utils.translation import ugettext_lazy as _
-
-from .settings import REGISTRATION_ENABLED, SHARED_SECRET
-
+from .settings import REGISTRATION_ENABLED, SHARED_SECRET, PLUGINS
+import netjsonconfig
+import importlib
 
 class DjangoNetjsonconfigApp(AppConfig):
     name = 'django_netjsonconfig'
@@ -45,3 +45,11 @@ class DjangoNetjsonconfigApp(AppConfig):
         self.__setmodels__()
         self.check_settings()
         self.connect_signals()
+        print('im rdy')
+        plugins = []
+        for i in PLUGINS:
+            print(i)
+            plugins.append(
+                getattr(importlib.import_module(i[:i.rfind('.')]), i[i.rfind('.') + 1:])
+            )
+        netjsonconfig.OpenWrt.add_plugins(plugins)

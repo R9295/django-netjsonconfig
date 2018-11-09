@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
-
+from django.conf import settings
+from django_netjsonconfig.tests import TestCoovaPlugin
 User = get_user_model()
-
+import netjsonconfig
 
 class TestViews(TestCase):
     """
@@ -32,3 +33,9 @@ class TestViews(TestCase):
                 continue
             if 'hostname' in schema['properties']['general']['properties']:
                 self.fail('hostname property must be hidden')
+
+    def test_plugin_in_schema(self):
+        settings.NETJSONCONFIG_PLUGINS += ['django_netjsonconfig.tests.TestCoovaPlugin']
+        self.client.force_login(User.objects.get(pk=1))
+        response = self.client.get(reverse('netjsonconfig:schema'))
+        self.assertIn('chilli', [k for k,v in response.json()['netjsonconfig.OpenWrt']['properties'].items()])
